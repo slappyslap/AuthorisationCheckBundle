@@ -15,6 +15,7 @@ class AuthorisationCheckExtension extends Extension
             $container,
             new FileLocator(__DIR__.'/../../config')
         );
+
         $loader->load('services.yaml');
     }
 }
