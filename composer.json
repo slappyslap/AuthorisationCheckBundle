@@ -1,0 +1,17 @@
+{
+    "name": "slappyslap/authorisation-check-bundle",
+    "description": "description",
+    "minimum-stability": "stable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Maxime",
+        }
+    ],
+    "require": {
+      "php": ">=8.0"
+    },
+    "autoload": {
+        "psr-4": { "AuthorisationCheckBundle\\": "src/" }
+    }
+}

@@ -1,0 +1,7 @@
+services:
+    AuthorisationCheckBundle\:
+        autowire: true
+        autoconfigure: true
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
