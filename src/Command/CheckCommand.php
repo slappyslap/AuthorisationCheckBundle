@@ -24,8 +24,7 @@ class CheckCommand extends Command
     {
         $this
             ->setDescription('Checks if the authorisation is correct')
-            ->setHelp('This command allows you to check if the authorisation is correct')
-        ;
+            ->setHelp('This command allows you to check if the authorisation is correct');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -57,21 +56,29 @@ class CheckCommand extends Command
             $parametersValues = [];
 
             foreach ($parameters as $parameter) {
-                if($route->hasDefault($parameter)) {
+                if ($route->hasDefault($parameter)) {
                     $parametersValues[$parameter] = $route->getDefault($parameter);
                 } else {
                     $parametersValues[$parameter] = 1;
                 }
             }
 
-            $response = $this->client->request('GET', $this->router->generate($routeName, $parametersValues, referenceType: UrlGeneratorInterface::ABSOLUTE_URL), [
-                'max_redirects' => 1,
-            ]);
+            try {
 
-            if (in_array($response->getStatusCode(), [200, 500], true)) {
-                // write in red
-                $output->writeln(sprintf('<fg=red>Route %s is accessible without authorisation, statusCode : %s, url : %s</>', $routeName, $response->getStatusCode(), $response->getInfo('url')));
+                $url = $this->router->generate($routeName, $parametersValues, UrlGeneratorInterface::ABSOLUTE_URL);
+
+                $response = $this->client->request('GET', $url, [
+                    'max_redirects' => 1,
+                ]);
+
+                if ($response->getInfo('url') === $url && in_array($response->getStatusCode(), [200, 500], true)) {
+                    $output->writeln(sprintf('<fg=red>Route %s is accessible without authorisation, statusCode : %s, url : %s</>', $routeName, $response->getStatusCode(), $response->getInfo('url')));
+                }
+            } catch (\Throwable $th) {
+                $output->writeln($th->getMessage());
             }
+
+
         }
 
         $output->writeln('Done!');
