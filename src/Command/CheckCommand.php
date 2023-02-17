@@ -3,6 +3,7 @@
 namespace AuthorisationCheckBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -24,15 +25,16 @@ class CheckCommand extends Command
     {
         $this
             ->setDescription('Checks if the authorisation is correct')
-            ->setHelp('This command allows you to check if the authorisation is correct');
+            ->setHelp('This command allows you to check if the authorisation is correct')
+            ->addArgument('host', InputArgument::OPTIONAL, 'localhost:8000', "localhost:8000")
+            ->addArgument('scheme', InputArgument::OPTIONAL, 'url', "http");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $context = $this->router->getContext();
-        $context->setHost('localhost:8000');
-        $context->setScheme('http');
+        $context->setHost($input->getArgument('host'));
+        $context->setScheme($input->getArgument('scheme'));
         $context->setBaseUrl('');
 
         $allRoutes = $this->router->getRouteCollection()->all();
